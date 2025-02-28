@@ -14,6 +14,9 @@ OR_PREFIX=${OR_PREFIX:="/usr/local/openresty"}
 OPENSSL_PREFIX=${OPENSSL_PREFIX:=$OR_PREFIX/openssl3}
 zlib_prefix=${OR_PREFIX}/zlib
 pcre_prefix=${OR_PREFIX}/pcre
+libunwind_prefix=${OR_PREFIX}/libunwind
+gperftools_prefix=${OR_PREFIX}/gperftools
+
 
 cc_opt=${cc_opt:-"-DNGX_LUA_ABORT_AT_PANIC -I$zlib_prefix/include -I$pcre_prefix/include -I$OPENSSL_PREFIX/include"}
 ld_opt=${ld_opt:-"-L$zlib_prefix/lib -L$pcre_prefix/lib -L$OPENSSL_PREFIX/lib -Wl,-rpath,$zlib_prefix/lib:$pcre_prefix/lib:$OPENSSL_PREFIX/lib"}
@@ -21,6 +24,9 @@ ld_opt=${ld_opt:-"-L$zlib_prefix/lib -L$pcre_prefix/lib -L$OPENSSL_PREFIX/lib -W
 
 # dependencies for building openresty
 OPENSSL_VERSION=${OPENSSL_VERSION:-"3.2.0"}
+libunwind_VERSION=${OPENSSL_VERSION:-"1.8.1"}
+gperftools_VERSION=${OPENSSL_VERSION:-"2.16"}
+
 OPENRESTY_VERSION="1.27.1.1"
 ngx_multi_upstream_module_ver="1.3.1"
 mod_dubbo_ver="1.0.2"
@@ -28,6 +34,21 @@ apisix_nginx_module_ver="1.18.0"
 wasm_nginx_module_ver="0.7.0"
 lua_var_nginx_module_ver="v0.5.3"
 lua_resty_events_ver="0.2.0"
+
+install_gperftools(){
+wget --no-check-certificate https://github.com/libunwind/libunwind/releases/download/v${libunwind_VERSION}/libunwind-${libunwind_VERSION}.tar.gz
+wget --no-check-certificate https://github.com/gperftools/gperftools/releases/download/gperftools-${gperftools_VERSION}/gperftools-${gperftools_VERSION}.tar.gz
+tar xvf libunwind-${libunwind_VERSION}.tar.gz
+tar xvf gperftools-${gperftools_VERSION}.tar.gz
+cd libunwind-${libunwind_VERSION}
+./configure --prefix=${libunwind_prefix} && make && make install
+cd ../gperftools-${gperftools_VERSION}
+./configure --prefix=${gperftools_prefix} && make && make install
+
+cd ..
+}
+
+
 
 
 install_openssl_3(){
@@ -73,6 +94,7 @@ repo=$(basename "$prev_workdir")
 workdir=$(mktemp -d)
 cd "$workdir" || exit 1
 
+install_gperftools
 
 install_openssl_3
 
@@ -178,6 +200,7 @@ fi
     --with-stream \
     --with-stream_ssl_module \
     --with-stream_ssl_preread_module \
+    --with-google_perftools_module \
     --with-http_v2_module \
     --with-http_v3_module \
     --without-mail_pop3_module \
