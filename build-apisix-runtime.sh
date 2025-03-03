@@ -44,7 +44,7 @@ cd libunwind-${libunwind_VERSION}
 ./configure --prefix=${libunwind_prefix} && make -j $(nproc) && make install 
 export LDFLAGS="-Wl,-rpath,$libunwind_prefix/lib:$gperftools_prefix/lib"
 
-export LD_LIBRARY_PATH = "$libunwind_prefix/lib"
+export LD_LIBRARY_PATH="$libunwind_prefix/lib"
 cd ../gperftools-${gperftools_VERSION}
 sed -i '70s/auto local_noopt = \[\] (void\* ptr) ATTRIBUTE_NOINLINE -> void\* {/auto local_noopt = \[\] (void\* ptr) ATTRIBUTE_NOINLINE  {/'  src/tests/sampling_test.cc
 ./configure --prefix=${gperftools_prefix} && make -j $(nproc) LD_LIBRARY_PATH=$LD_LIBRARY_PATH && make install
