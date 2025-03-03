@@ -74,9 +74,9 @@ build_apisix_runtime_deb() {
         arch_path="arm64/"
     fi
     DEBIAN_FRONTEND=noninteractive apt-get update --fix-missing
-    DEBIAN_FRONTEND=noninteractive apt-get install -y sudo git libreadline-dev lsb-release libssl-dev perl build-essential gcc g++ xz-utils curl cpanminus
-    DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends wget gnupg ca-certificates 
-    wget -O - https://openresty.org/package/pubkey.gpg | apt-key add -
+    DEBIAN_FRONTEND=noninteractive apt-get install -y sudo git libreadline-dev lsb-release libssl-dev perl build-essential gcc g++ xz-utils curl cpanminus >> /dev/null
+    DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends wget gnupg ca-certificates >> /dev/null
+    wget -O - https://openresty.org/package/pubkey.gpg | apt-key add - >> /dev/null
 
     if [[ $IMAGE_BASE == "ubuntu" ]]; then
         echo "deb http://openresty.org/package/${arch_path}ubuntu $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/openresty.list
@@ -86,8 +86,8 @@ build_apisix_runtime_deb() {
         echo "deb http://openresty.org/package/${arch_path}debian $(lsb_release -sc) openresty" | tee /etc/apt/sources.list.d/openresty.list
     fi
 
-    DEBIAN_FRONTEND=noninteractive apt-get update
-    DEBIAN_FRONTEND=noninteractive apt-get install -y openresty-pcre-dev openresty-zlib-dev
+    DEBIAN_FRONTEND=noninteractive apt-get update >> /dev/null
+    DEBIAN_FRONTEND=noninteractive apt-get install -y openresty-pcre-dev openresty-zlib-dev >> /dev/null
 
     export_openresty_variables
     # fix OR_PREFIX
