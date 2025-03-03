@@ -46,7 +46,7 @@ jobs:
         uses: actions/cache@v3.4.3
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-apisix-${ TAG_VERSION }
+          key: ${{ runner.os }}-buildx-apisix-${{ env.TAG_VERSION }}
       - name: Extract Tags version
         if: ${{ startsWith(github.ref, 'refs/tags/') }}
         shell: bash
