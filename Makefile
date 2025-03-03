@@ -265,7 +265,7 @@ endif
 .PHONY: build-apisix-runtime-deb
 build-apisix-runtime-deb:
 ifeq ($(app),apisix)
-	git clone -b apisix-runtime/$(runtime_version) $(apisix_runtime_repo) ./apisix-runtime
+	git clone -b master $(apisix_runtime_repo) ./apisix-runtime
 	$(call build_runtime,apisix-runtime,apisix-runtime,deb,"./apisix-runtime")
 	rm -fr ./apisix-runtime
 else
