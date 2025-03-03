@@ -38,12 +38,13 @@ lua_resty_events_ver="0.2.0"
 install_gperftools(){
 wget --no-check-certificate https://github.com/libunwind/libunwind/releases/download/v${libunwind_VERSION}/libunwind-${libunwind_VERSION}.tar.gz
 wget --no-check-certificate https://github.com/gperftools/gperftools/releases/download/gperftools-${gperftools_VERSION}/gperftools-${gperftools_VERSION}.tar.gz
-tar xvf libunwind-${libunwind_VERSION}.tar.gz
-tar xvf gperftools-${gperftools_VERSION}.tar.gz
+tar xf libunwind-${libunwind_VERSION}.tar.gz
+tar xf gperftools-${gperftools_VERSION}.tar.gz
 cd libunwind-${libunwind_VERSION}
-./configure --prefix=${libunwind_prefix} && make && make install
+./configure --prefix=${libunwind_prefix} && make -j $(nproc) && make install 
+export LDFLAGS="-Wl,-rpath,$libunwind_prefix/lib:$gperftools_prefix/lib"
 cd ../gperftools-${gperftools_VERSION}
-./configure --prefix=${gperftools_prefix} && make && make install
+./configure --prefix=${gperftools_prefix} && make -j $(nproc) && make install
 
 cd ..
 }
@@ -59,7 +60,7 @@ install_openssl_3(){
     # required for openssl 3.x config
     cpanm IPC/Cmd.pm
     wget --no-check-certificate https://github.com/openssl/openssl/releases/download/openssl-3.2.0/openssl-${OPENSSL_VERSION}.tar.gz
-    tar xvf openssl-${OPENSSL_VERSION}.tar.gz
+    tar xf openssl-${OPENSSL_VERSION}.tar.gz
     cd openssl-${OPENSSL_VERSION}/
     export LDFLAGS="-Wl,-rpath,$zlib_prefix/lib:$OPENSSL_PREFIX/lib"
     ./config $fips \
