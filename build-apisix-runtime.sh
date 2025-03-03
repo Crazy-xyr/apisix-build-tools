@@ -18,8 +18,8 @@ libunwind_prefix=${OR_PREFIX}/libunwind
 gperftools_prefix=${OR_PREFIX}/gperftools
 
 
-cc_opt=${cc_opt:-"-DNGX_LUA_ABORT_AT_PANIC -I$zlib_prefix/include -I$pcre_prefix/include -I$OPENSSL_PREFIX/include -I$libunwind_prefix/include -I$gperftools_prefix/lib "}
-ld_opt=${ld_opt:-"-L$zlib_prefix/lib -L$pcre_prefix/lib -L$OPENSSL_PREFIX/lib -L$OPENSSL_PREFIX/lib -L$gperftools_prefix/lib -Wl,-rpath,$zlib_prefix/lib:$pcre_prefix/lib:$OPENSSL_PREFIX/lib:OPENSSL_PREFIX/lib:$gperftools_prefix/lib"}
+cc_opt=${cc_opt:-"-DNGX_LUA_ABORT_AT_PANIC -I$zlib_prefix/include -I$pcre_prefix/include -I$OPENSSL_PREFIX/include "}
+ld_opt=${ld_opt:-"-L$zlib_prefix/lib -L$pcre_prefix/lib -L$OPENSSL_PREFIX/lib -Wl,-rpath,$zlib_prefix/lib:$pcre_prefix/lib:$OPENSSL_PREFIX/lib "}
 
 
 # dependencies for building openresty
@@ -185,8 +185,8 @@ fi
 
 
 ./configure --prefix="$OR_PREFIX" \
-    --with-cc-opt="-DAPISIX_RUNTIME_VER=$runtime_version $cc_opt" \
-    --with-ld-opt="-Wl,-rpath,$OR_PREFIX/wasmtime-c-api/lib $ld_opt" \
+    --with-cc-opt="-DAPISIX_RUNTIME_VER=$runtime_version $cc_opt -I$libunwind_prefix/include -I$gperftools_prefix/lib " \
+    --with-ld-opt="-Wl,-rpath,$OR_PREFIX/wasmtime-c-api/lib $ld_opt  -L$libunwind_prefix/lib -L$gperftools_prefix/lib -Wl,-rpath,$libunwind_prefix/lib:$gperftools_prefix/lib" \
     $debug_args \
     --add-module=../mod_dubbo-${mod_dubbo_ver} \
     --add-module=../ngx_multi_upstream_module-${ngx_multi_upstream_module_ver} \
