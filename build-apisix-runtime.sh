@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 set -x
+exec 3>&1 
+exec > /dev/null
 
 runtime_version=${runtime_version:-0.0.0}
 
@@ -98,9 +100,9 @@ repo=$(basename "$prev_workdir")
 workdir=$(mktemp -d)
 cd "$workdir" || exit 1
 
-install_gperftools
+install_gperftools > /dev/null
 
-install_openssl_3
+install_openssl_3 > /dev/null
 
 wget --no-check-certificate https://openresty.org/download/openresty-${OPENRESTY_VERSION}.tar.gz
 tar -zxvpf openresty-${OPENRESTY_VERSION}.tar.gz > /dev/null
@@ -182,7 +184,7 @@ else
     tar -xzf lua-resty-limit-traffic-$limit_ver.tar.gz
     mv lua-resty-limit-traffic-$limit_ver bundle/lua-resty-limit-traffic-$or_limit_ver
 fi
-
+exec 1>&3
 
 ./configure --prefix="$OR_PREFIX" \
     --with-cc-opt="-DAPISIX_RUNTIME_VER=$runtime_version $cc_opt -I$libunwind_prefix/include -I$gperftools_prefix/lib " \
