@@ -204,7 +204,7 @@ endif
 .PHONY: build-apisix-deb
 build-apisix-deb:
 ifeq ($(local_code_path), 0)
-	git clone -b $(checkout) $(apisix_repo) ./apisix
+	git clone -b master $(apisix_repo) ./apisix
 	$(call build,apisix,apisix,deb,"./apisix")
 	rm -fr ./apisix
 else
