@@ -18,8 +18,8 @@ libunwind_prefix=${OR_PREFIX}/libunwind
 gperftools_prefix=${OR_PREFIX}/gperftools
 
 
-cc_opt=${cc_opt:-"-DNGX_LUA_ABORT_AT_PANIC -I$zlib_prefix/include -I$pcre_prefix/include -I$OPENSSL_PREFIX/include"}
-ld_opt=${ld_opt:-"-L$zlib_prefix/lib -L$pcre_prefix/lib -L$OPENSSL_PREFIX/lib -Wl,-rpath,$zlib_prefix/lib:$pcre_prefix/lib:$OPENSSL_PREFIX/lib"}
+cc_opt=${cc_opt:-"-DNGX_LUA_ABORT_AT_PANIC -I$zlib_prefix/include -I$pcre_prefix/include -I$OPENSSL_PREFIX/include -I$libunwind_prefix/include -I$gperftools_prefix/lib "}
+ld_opt=${ld_opt:-"-L$zlib_prefix/lib -L$pcre_prefix/lib -L$OPENSSL_PREFIX/lib -L$OPENSSL_PREFIX/lib -L$gperftools_prefix/lib -Wl,-rpath,$zlib_prefix/lib:$pcre_prefix/lib:$OPENSSL_PREFIX/lib:OPENSSL_PREFIX/lib:$gperftools_prefix/lib"}
 
 
 # dependencies for building openresty
@@ -43,9 +43,10 @@ tar xf gperftools-${gperftools_VERSION}.tar.gz
 cd libunwind-${libunwind_VERSION}
 ./configure --prefix=${libunwind_prefix} && make -j $(nproc) && make install 
 export LDFLAGS="-Wl,-rpath,$libunwind_prefix/lib:$gperftools_prefix/lib"
+
 cd ../gperftools-${gperftools_VERSION}
 sed -i '70s/auto local_noopt = \[\] (void\* ptr) ATTRIBUTE_NOINLINE -> void\* {/auto local_noopt = \[\] (void\* ptr) ATTRIBUTE_NOINLINE  {/'  src/tests/sampling_test.cc
-./configure --prefix=${gperftools_prefix} && make -j $(nproc) && make install
+./configure --prefix=${gperftools_prefix} && make -j $(nproc) LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$libunwind_prefix/lib && make install
 
 cd ..
 }
