@@ -47,7 +47,7 @@ else ifeq ($(CPU_ARCH), aarch64)
     arch := linux/arm64
 endif
 
-buildx=0
+buildx=1
 cache_from=type=local,src=/tmp/.buildx-cache
 cache_to=type=local,dest=/tmp/.buildx-cache
 ### function for building
